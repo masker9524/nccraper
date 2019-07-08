@@ -7,7 +7,7 @@ class Database:
         self.host = host
         self.user = user
         self.password = password
-        self.database = 'test'
+        self.database = 'ncc'
         with open('variable.json', 'r') as f:
             self.json_data = json.load(f)
             f.close()
@@ -30,7 +30,7 @@ class Database:
         tower = 'CREATE TABLE tower_{} (' \
                 'tower_id INT AUTO_INCREMENT PRIMARY KEY, ' \
                 'time_stamp DATETIME,' \
-                'license_id VARCHAR(10),' \
+                'license_id VARCHAR(10) UNIQUE,' \
                 'company VARCHAR(15),' \
                 'start_date DATE,' \
                 'business_type VARCHAR(10),' \

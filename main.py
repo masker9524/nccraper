@@ -4,10 +4,11 @@ import csv
 import re
 import copy
 import database
+import smtp
 
 if __name__ == "__main__":
-    print('nccraper version 0.0.1')
-    print('author: chu.yu')
+    print('nccraper version 0.0.2')
+    print('author: chu.yu787')
     sc = scarp.Scrap()
     mainPage = sc.my_soup(sc.url_prefix + 'NCCB06Q_01v1.aspx')
     if sc.check_update_time(mainPage):
@@ -16,11 +17,16 @@ if __name__ == "__main__":
         po.get_file()
         # create new table in database
         print('Connecting to database...')
-        db = database.Database('172.16.237.132', 'ncc', 'ncc')
+        db = database.Database('localhost', 'ncc', 'ncc')
         db.create_table()
         print('Table created successfully!')
+        # send mail !!!!!
+        mail = smtp.Smtp('ACCOUNT', 'PASSWORD')
+        nccDate = db.json_data['nccDate']
+        body = f'Hi there,/nNCC has updated their database at {nccDate}. Scraping is doing some magic right now.'
+        mail.send_mail('TO_ADDR', 'Start scraping NCC database ', body)
         # scrap basic data first
-        print('Now scrap basic data...')
+        print('Scrap basic data...')
         county = sc.get_county(mainPage)
         for each in list(county.keys()):
             if re.match(r'台', each):
@@ -44,6 +50,7 @@ if __name__ == "__main__":
         tel = {'CHT': '中華', 'FET': '遠傳', 'TWN': '台灣大', 'GT': '亞太', 'TSTAR': '台灣之星'}
 
         # real scraping
+        print('Scrap data...')
         with open('postcode.csv', 'r') as csv_file:
             csv_reader = csv.DictReader(csv_file)
             j = 1
@@ -80,3 +87,6 @@ if __name__ == "__main__":
                                     db.insert_freq(freq_table, result_table['Time Stamp'])
                                     # input("Press Enter to continue...")
                 j += 1
+        dbname = db.database
+        body = f'Hi there,/nScraping finished! You can check the tables which suffix are {nccDate} at {dbname}.'
+        mail.send_mail('TO_ADDR', 'Scraping NCC database finished', body)
