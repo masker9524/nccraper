@@ -8,7 +8,7 @@ class Database:
         self.user = user
         self.password = password
         self.database = 'ncc'
-        with open('variable.json', 'r') as f:
+        with open('.variable.json', 'r') as f:
             self.json_data = json.load(f)
             f.close()
 
@@ -35,7 +35,7 @@ class Database:
                 'start_date DATE,' \
                 'business_type VARCHAR(10),' \
                 'expire_date DATE,' \
-                'power INT,' \
+                'power NUMERIC(10,3),' \
                 'tower_type VARCHAR(10),' \
                 'city VARCHAR(10),' \
                 'together VARCHAR(10),' \
@@ -48,7 +48,7 @@ class Database:
                'tower_id INT,' \
                'license_id VARCHAR(10),' \
                'frequency VARCHAR(10),' \
-               'bandwidth INT,' \
+               'bandwidth NUMERIC(10,3),' \
                'PRIMARY KEY (tower_id, frequency),' \
                'CONSTRAINT FK_tower_id_{} FOREIGN KEY (tower_id) REFERENCES tower_{}(tower_id)) ' \
                'DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci'.format(self.json_data['nccDate'], self.json_data['nccDate'], self.json_data['nccDate'])
@@ -68,7 +68,7 @@ class Database:
         cmd = \
             f"INSERT INTO tower_{fix} (time_stamp, license_id, company, start_date, business_type, expire_date, power, tower_type, city, together, statue, row_county, row_city, row_street) " \
             f"VALUES (str_to_date('{data[0]}', '%Y-%m-%d %H:%i:%s %f'), '{data[1]}', '{data[2]}',str_to_date('{data[3]}', '%Y/%m/%d'), '{data[4]}', str_to_date('{data[5]}', '%Y/%m/%d')," \
-            f"{int(data[6])}, '{data[7]}', '{data[8]}', '{data[9]}', '{data[10]}', '{data[11]}', '{data[12]}', '{data[13]}')"
+            f"{float(data[6])}, '{data[7]}', '{data[8]}', '{data[9]}', '{data[10]}', '{data[11]}', '{data[12]}', '{data[13]}')"
         try:
             mydb.cursor().execute(cmd)
             mydb.cursor().execute('COMMIT')
@@ -89,7 +89,7 @@ class Database:
         fix = self.json_data['nccDate']
         cmd = f"INSERT INTO freq_{fix} (tower_id, license_id, frequency, bandwidth) " \
             f"VALUES ((SELECT tower_id FROM tower_{fix} WHERE tower_{fix}.license_id = '{data[0]}' AND str_to_date('{time_stamp}', '%Y-%m-%d %H:%i:%s %f')), " \
-            f"'{data[0]}', '{data[1]}', {int(data[2])})"
+            f"'{data[0]}', '{data[1]}', {float(data[2])})"
         try:
             mydb.cursor().execute(cmd)
             mydb.cursor().execute('COMMIT')

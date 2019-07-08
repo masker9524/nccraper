@@ -16,7 +16,7 @@ class PostOffice:
         'Accept-Encoding': 'gzip, deflate, br',
         'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8'}
 
-    def __init__(self, post_url='https://www.post.gov.tw/post/internet/Download/index.jsp?ID=220306', headers=req_headers, jsonfile='variable.json'):
+    def __init__(self, post_url='https://www.post.gov.tw/post/internet/Download/index.jsp?ID=220306', headers=req_headers, jsonfile='.variable.json'):
         self.post_url = post_url
         self.headers = headers
         self.jsonfile = jsonfile

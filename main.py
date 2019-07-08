@@ -21,10 +21,13 @@ if __name__ == "__main__":
         db.create_table()
         print('Table created successfully!')
         # send mail !!!!!
-        mail = smtp.Smtp('ACCOUNT', 'PASSWORD')
         nccDate = db.json_data['nccDate']
+        from_mail_addr = db.json_data['from_mail_addr']
+        from_mail_passwd = db.json_data['from_mail_passwd']
+        to_mail_addr = db.json_data['to_mail_addr']
+        mail = smtp.Smtp(from_mail_addr, from_mail_passwd)
         body = f'Hi there,/nNCC has updated their database at {nccDate}. Scraping is doing some magic right now.'
-        mail.send_mail('TO_ADDR', 'Start scraping NCC database ', body)
+        mail.send_mail(to_mail_addr, 'Start scraping NCC database ', body)
         # scrap basic data first
         print('Scrap basic data...')
         county = sc.get_county(mainPage)
@@ -89,4 +92,4 @@ if __name__ == "__main__":
                 j += 1
         dbname = db.database
         body = f'Hi there,/nScraping finished! You can check the tables which suffix are {nccDate} at {dbname}.'
-        mail.send_mail('TO_ADDR', 'Scraping NCC database finished', body)
+        mail.send_mail(to_mail_addr, 'Scraping NCC database finished', body)
